@@ -1,0 +1,49 @@
+GET _search?search_type=count
+{
+   "query": {
+      "filtered": {
+         "filter": {
+            "bool": {
+               "must": [
+                  {
+                     "query": {
+                        "query_string": {
+                           "analyze_wildcard": true,
+                           "query": "*"
+                        }
+                     }
+                  },
+                  {
+                     "range": {
+                        "timestamp": {
+                           "gte": "now-1h",
+                           "lte": "now"
+                        }
+                     }
+                  },
+                  {
+                     "query": {
+                        "match": {
+                           "type": {
+                              "query": "thrift",
+                              "type": "phrase"
+                           }
+                        }
+                     }
+                  }
+               ],
+               "must_not": []
+            }
+         }
+      }
+   },
+   "aggs": {
+      "methods": {
+         "terms": { 
+             "field": "method",
+             "size": 10
+         }
+      }
+   }
+}
+

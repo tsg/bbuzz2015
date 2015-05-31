@@ -1,0 +1,37 @@
+{
+   "query": {
+      "filtered": {
+         "filter": {
+            "bool": {
+               "must": [
+                  {
+                     "query": {
+                        "query_string": {
+                           "analyze_wildcard": true,
+                           "query": "*"
+                        }
+                     }
+                  },
+                  {
+                     "range": {
+                        "timestamp": {
+                           "gte": "now-1h",
+                           "lte": "now"
+                        }
+                     }
+                  }
+               ],
+               "must_not": []
+            }
+         }
+      }
+   },
+   "aggs": {
+      "responsetime_percentiles": {
+         "percentiles": {
+            "field": "responsetime",
+            "percents": [75, 95, 99.5]
+         }
+      }
+   }
+}

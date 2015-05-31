@@ -1,0 +1,50 @@
+GET _search?search_type=count
+{
+   "query": {
+      "filtered": {
+         "filter": {
+            "bool": {
+               "must": [
+                  {
+                     "query": {
+                        "query_string": {
+                           "analyze_wildcard": true,
+                           "query": "*"
+                        }
+                     }
+                  },
+                  {
+                     "range": {
+                        "timestamp": {
+                           "gte": "now-1h",
+                           "lte": "now"
+                        }
+                     }
+                  }
+               ],
+               "must_not": []
+            }
+         }
+      }
+   },
+   "aggs": {
+      "per_1m": {
+         "date_histogram": {
+            "field": "timestamp",
+            "interval": "1m"
+         },
+         "aggs": {
+            "responsetime_percentiles": {
+               "percentiles": {
+                  "field": "responsetime",
+                  "percents": [
+                     75,
+                     95,
+                     99.5
+                  ]
+               }
+            }
+         }
+      }
+   }
+}

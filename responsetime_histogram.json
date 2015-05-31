@@ -1,0 +1,39 @@
+GET _search?search_type=count
+{
+   "query": {
+      "filtered": {
+         "filter": {
+            "bool": {
+               "must": [
+                  {
+                     "query": {
+                        "query_string": {
+                           "analyze_wildcard": true,
+                           "query": "*"
+                        }
+                     }
+                  },
+                  {
+                     "range": {
+                        "timestamp": {
+                           "gte": "now-1h",
+                           "lte": "now"
+                        }
+                     }
+                  }
+               ],
+               "must_not": []
+            }
+         }
+      }
+   },
+   "aggs": {
+      "responsetime_histogram": {
+         "histogram": {
+               "field": "responsetime",
+               "interval": 10
+         }
+      }
+   }
+}
+
