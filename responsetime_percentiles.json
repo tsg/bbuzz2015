@@ -1,3 +1,4 @@
+GET _search?search_type=count
 {
    "query": {
       "filtered": {

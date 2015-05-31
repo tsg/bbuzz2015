@@ -20,16 +20,6 @@ GET _search?search_type=count
                            "lte": "now"
                         }
                      }
-                  },
-                  {
-                     "query": {
-                        "match": {
-                           "type": {
-                              "query": "thrift",
-                              "type": "phrase"
-                           }
-                        }
-                     }
                   }
                ],
                "must_not": []
@@ -38,12 +28,19 @@ GET _search?search_type=count
       }
    },
    "aggs": {
-      "methods": {
-         "terms": { 
-             "field": "method",
-             "size": 10
+      "per_1m": {
+         "date_histogram": {
+            "field": "timestamp",
+            "interval": "1m"
+         },
+         "aggs": {
+            "responsetime_histogram": {
+               "histogram": {
+                  "field": "responsetime",
+                  "interval": 10
+               }
+            }
          }
       }
    }
 }
-
